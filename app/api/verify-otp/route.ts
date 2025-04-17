@@ -1,4 +1,4 @@
-import type { NextApiRequest, NextApiResponse } from 'next';
+import { NextRequest, NextResponse } from 'next/server';
 import twilio from 'twilio';
 
 interface VerifyOtpRequestBody {
@@ -14,7 +14,6 @@ interface VerifyOtpResponse {
 const accountSid = process.env.accountSid;
 const authToken = process.env.authToken;
 const serviceSid = process.env.serviceSid;
-const phoneNumber = process.env.phoneNumber;
 
 
 if (!accountSid || !authToken || !serviceSid) {
@@ -23,32 +22,26 @@ if (!accountSid || !authToken || !serviceSid) {
 
 const client = twilio(accountSid, authToken);
 
-export default async function handler(
-  req: NextApiRequest,
-  res: NextApiResponse<VerifyOtpResponse>
-) {
-  if (req.method !== 'POST') {
-    return res.status(405).json({ error: 'Method not allowed' });
-  }
-
-  const { phoneNumber, code } = req.body as VerifyOtpRequestBody;
-
-  if (!phoneNumber || !code) {
-    return res.status(400).json({ error: 'Phone number and OTP code are required' });
-  }
-
+export async function POST(req: NextRequest) {
   try {
+    const body: VerifyOtpRequestBody = await req.json();
+    const { phoneNumber, code } = body;
+
+    if (!phoneNumber || !code) {
+      return NextResponse.json({ error: 'Phone number and OTP code are required' }, { status: 400 });
+    }
+
     const verificationCheck = await client.verify.v2
       .services(serviceSid as string)
       .verificationChecks.create({ to: phoneNumber, code });
 
     if (verificationCheck.status === 'approved') {
-      return res.status(200).json({ message: 'OTP verified successfully' });
+      return NextResponse.json({ message: 'OTP verified successfully' }, { status: 200 });
     } else {
-      return res.status(400).json({ error: 'Invalid OTP' });
+      return NextResponse.json({ error: 'Invalid OTP' }, { status: 400 });
     }
   } catch (error) {
     console.error('Error verifying OTP:', error);
-    return res.status(500).json({ error: 'Failed to verify OTP' });
+    return NextResponse.json({ error: 'Failed to verify OTP' }, { status: 500 });
   }
 }
