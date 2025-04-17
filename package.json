@@ -13,8 +13,10 @@
   },
   "dependencies": {
     "@prisma/client": "^6.6.0",
+    "@tabler/icons-react": "^3.31.0",
     "@types/qrcode": "^1.5.5",
     "@types/uuid": "^10.0.0",
+    "framer-motion": "^12.7.4",
     "html5-qrcode": "^2.3.8",
     "jsonwebtoken": "^9.0.2",
     "next": "14.2.28",
