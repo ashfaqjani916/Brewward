@@ -18,22 +18,14 @@
     "@types/uuid": "^10.0.0",
     "framer-motion": "^12.7.4",
     "html5-qrcode": "^2.3.8",
-<<<<<<< HEAD
-    "lucide-react": "^0.488.0",
-=======
     "jsonwebtoken": "^9.0.2",
->>>>>>> 0cde1645ba0437d5a1faaf176052b5040c75f0ec
     "next": "14.2.28",
     "qrcode": "^1.5.4",
     "react": "^18",
     "react-dnd": "^16.0.1",
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
-<<<<<<< HEAD
-    "react-hot-toast": "^2.5.2",
-=======
     "ts-node": "^10.9.2",
->>>>>>> 0cde1645ba0437d5a1faaf176052b5040c75f0ec
     "twilio": "^5.5.2",
     "uuid": "^11.1.0",
     "zustand": "^5.0.3"
