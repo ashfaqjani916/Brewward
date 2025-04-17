@@ -1,62 +1,78 @@
-import { PrismaClient } from '@prisma/client/extension';
-import { NextRequest, NextResponse } from 'next/server';
+// app/api/verify-otp/route.ts
+'use server'
+
+import { PrismaClient } from '@prisma/client'
+import { NextRequest, NextResponse } from 'next/server'
 import twilio from 'twilio'
 import jwt from 'jsonwebtoken'
 
-const prisma = new PrismaClient();
+// Create a singleton Prisma client to avoid too many connections
+declare global {
+  // eslint-disable-next-line no-var
+  var prisma: PrismaClient | undefined
+}
+const prisma = global.prisma ?? new PrismaClient({ log: ['query'] })
+if (process.env.NODE_ENV !== 'production') global.prisma = prisma
+
+// Load and validate env vars
+const TWILIO_ACCOUNT_SID = process.env.accountSid;
+const TWILIO_AUTH_TOKEN = process.env.authToken;
+const TWILIO_SERVICE_SID = process.env.serviceSid;
+const JWT_SECRET = process.env.JWT_SECRET;
+if (!TWILIO_ACCOUNT_SID || !TWILIO_AUTH_TOKEN || !TWILIO_SERVICE_SID || !JWT_SECRET) {
+  throw new Error('Missing required environment variables: TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN, TWILIO_SERVICE_SID, or JWT_SECRET')
+}
+
+const twilioClient = twilio(TWILIO_ACCOUNT_SID, TWILIO_AUTH_TOKEN)
 
 interface VerifyOtpRequestBody {
-  phoneNumber: string;
-  code: string;
+  phoneNumber: string
+  code: string
 }
 
-interface VerifyOtpResponse {
-  message?: string;
-  error?: string;
-}
-
-const accountSid = process.env.accountSid;
-const authToken = process.env.authToken;
-const serviceSid = process.env.serviceSid;
-const jwtSecret = process.env.JWT_SECRET;
-
-
-if (!accountSid || !authToken || !serviceSid) {
-  throw new Error('Twilio environment variables are not set');
-}
-
-const client = twilio(accountSid, authToken);
-export async function POST(req: NextRequest) {
+export async function POST(request: NextRequest) {
   try {
-    const body: VerifyOtpRequestBody = await req.json();
-    const { phoneNumber, code } = body;
+    const { phoneNumber, code } = (await request.json()) as VerifyOtpRequestBody
 
     if (!phoneNumber || !code) {
-      return NextResponse.json({ error: 'Phone number and OTP code are required' }, { status: 400 });
+      return NextResponse.json(
+        { error: 'Phone number and OTP code are required' },
+        { status: 400 }
+      )
     }
 
-    const verificationCheck = await client.verify.v2
-      .services(serviceSid as string)
-      .verificationChecks.create({ to: phoneNumber, code });
+    // Verify OTP via Twilio
+    const verification = await twilioClient.verify.v2
+      .services(TWILIO_SERVICE_SID as string)
+      .verificationChecks.create({ to: phoneNumber, code })
 
-    if (verificationCheck.status !== 'approved') {
-      return NextResponse.json({ error: 'Invalid OTP' }, { status: 400 });
+    if (verification.status !== 'approved') {
+      return NextResponse.json({ error: 'Invalid OTP' }, { status: 400 })
     }
 
-    // Check if user exists, create if not
-    let user = await prisma.user.findUnique({ where: { phoneNumber } });
-    if (!user) {
-      user = await prisma.user.create({
-        data: { phoneNumber },
-      });
-    }
+    // Upsert user in the database
+    const user = await prisma.user.upsert({
+      where: { phoneNumber },
+      update: {},
+      create: { phoneNumber },
+    })
 
-    // Create JWT (expires in 10 minutes)
-    const token = jwt.sign({ phoneNumber, userId: user.id }, jwtSecret as string, { expiresIn: '10m' });
+    // Generate JWT
+    const token = jwt.sign(
+      { userId: user.id, phoneNumber: user.phoneNumber },
+      JWT_SECRET as string,
+      { expiresIn: '10m' }
+    )
 
-    return NextResponse.json({ message: 'OTP verified successfully', token }, { status: 200 });
-  } catch (error) {
-    console.error('Error verifying OTP:', error);
-    return NextResponse.json({ error: 'Failed to verify OTP' }, { status: 500 });
+    return NextResponse.json(
+      { message: 'OTP verified successfully', token },
+      { status: 200 }
+    )
+  } catch (err) {
+    console.error('Error verifying OTP:', err)
+    return NextResponse.json(
+      { error: 'Failed to verify OTP' },
+      { status: 500 }
+    )
   }
 }
