@@ -15,71 +15,70 @@ export default function LoginPage() {
   const { login, isAuthenticated } = useAuthStore()
 
   useEffect(() => {
-    // Redirect if already authenticated
     if (isAuthenticated) {
       router.push('/dashboard')
     }
   }, [isAuthenticated, router])
 
   interface ApiResponse {
-    message?: string;
-    error?: string;
-    verification?: any; // Adjust type based on Twilio's verification response
+    message?: string
+    error?: string
+    verification?: any
+    token?: string
   }
 
   const handleSendOtp = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMessage('');
-    setIsLoading(true);
+    e.preventDefault()
+    setMessage('')
+    setIsLoading(true)
 
     try {
       const response = await fetch('/api/send-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phoneNumber }),
-      });
-      const data: ApiResponse = await response.json();
+      })
+      const data: ApiResponse = await response.json()
 
       if (response.ok) {
-        setOtpSent(true);
-        setMessage('OTP sent to your phone!');
+        setOtpSent(true)
+        setMessage('OTP sent to your phone!')
       } else {
-        setMessage(data.error || 'Failed to send OTP');
+        setMessage(data.error || 'Failed to send OTP')
       }
     } catch (error) {
-      setMessage('An error occurred');
+      setMessage('An error occurred while sending OTP')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   const handleVerifyOtp = async (e: FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    setMessage('');
-    setIsLoading(true);
+    e.preventDefault()
+    setMessage('')
+    setIsLoading(true)
 
     try {
       const response = await fetch('/api/verify-otp', {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ phoneNumber, code: otp }),
-      });
-      const data: ApiResponse = await response.json();
+      })
+      const data: ApiResponse = await response.json()
 
-      if (response.ok) {
-        setMessage('Login successful!');
-        // Use Zustand store to set authentication state
-        login(phoneNumber);
-        // Router will redirect based on the useEffect above
+      if (response.ok && data.token) {
+        setMessage('Login successful!')
+        login(phoneNumber, data.token) // <-- Save to Zustand, assuming login(phone, token)
+        router.push('/dashboard') // Optional immediate redirect
       } else {
-        setMessage(data.error || 'Invalid OTP');
+        setMessage(data.error || 'Invalid OTP')
       }
     } catch (error) {
-      setMessage('An error occurred');
+      setMessage('An error occurred while verifying OTP')
     } finally {
-      setIsLoading(false);
+      setIsLoading(false)
     }
-  };
+  }
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-[#F5F0E6] py-12 px-4 sm:px-6 lg:px-8">
@@ -137,15 +136,22 @@ export default function LoginPage() {
             >
               {isLoading ? (
                 <div className="flex items-center">
-                  <svg className="animate-spin -ml-1 mr-3 h-5 w-5 text-white" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                  <svg
+                    className="animate-spin -ml-1 mr-3 h-5 w-5 text-white"
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="none"
+                    viewBox="0 0 24 24"
+                  >
                     <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                    <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                    <path
+                      className="opacity-75"
+                      fill="currentColor"
+                      d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"
+                    ></path>
                   </svg>
                   {otpSent ? 'Verifying...' : 'Sending...'}
                 </div>
-              ) : (
-                otpSent ? 'Verify OTP' : 'Send OTP'
-              )}
+              ) : otpSent ? 'Verify OTP' : 'Send OTP'}
             </button>
           </div>
         </form>
