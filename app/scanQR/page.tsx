@@ -23,7 +23,7 @@ export default function Page() {
           setScanning(false);
           scanner.clear();
         },
-        (error: any) => {
+        (error) => {
           console.warn(error);
         }
       );
