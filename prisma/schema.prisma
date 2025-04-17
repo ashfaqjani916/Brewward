@@ -1,0 +1,55 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id          Int         @id @default(autoincrement())
+  phoneNumber String      @unique
+  createdAt   DateTime    @default(now())
+  updatedAt   DateTime    @updatedAt
+  inventory   Inventory[]
+  coffees     Coffee[]
+
+  QrCode QrCode[]
+}
+
+model Ingredient {
+  id           Int         @id @default(autoincrement())
+  ingredientId String?     @unique
+  name         String      @unique // e.g., sugar, milk, ice, coffee, chocochips
+  qrCodes      QrCode[]
+  inventories  Inventory[]
+}
+
+model QrCode {
+  id           String     @id @default(uuid())
+  ingredientId Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  createdAt    DateTime   @default(now())
+  usedByUserId Int?       @unique
+  usedByUser   User?      @relation(fields: [usedByUserId], references: [id])
+}
+
+model Inventory {
+  id           Int        @id @default(autoincrement())
+  userId       Int
+  user         User       @relation(fields: [userId], references: [id])
+  ingredientId Int
+  ingredient   Ingredient @relation(fields: [ingredientId], references: [id])
+  quantity     Int        @default(1)
+
+  @@unique([userId, ingredientId])
+}
+
+model Coffee {
+  id        Int      @id @default(autoincrement())
+  userId    Int
+  user      User     @relation(fields: [userId], references: [id])
+  type      String // e.g., Latte, Mocha, IcedCoffee
+  createdAt DateTime @default(now())
+}

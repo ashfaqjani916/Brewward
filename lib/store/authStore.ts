@@ -4,21 +4,39 @@ import { persist } from 'zustand/middleware';
 interface AuthState {
   isAuthenticated: boolean;
   phoneNumber: string | null;
-  login: (phoneNumber: string) => void;
+  token: string | null;
+  loginTimestamp: number | null;
+  login: (phoneNumber: string, token: string) => void;
   logout: () => void;
+  isSessionValid: () => boolean;
 }
+
+const SESSION_DURATION_MS = 25 * 60 * 1000;
 
 export const useAuthStore = create<AuthState>()(
   persist(
-    (set) => ({
+    (set, get) => ({
       isAuthenticated: false,
       phoneNumber: null,
-      login: (phoneNumber: string) => set({ isAuthenticated: true, phoneNumber }),
-      logout: () => set({ isAuthenticated: false, phoneNumber: null }),
+      token: null,
+      loginTimestamp: null,
+      login: (phoneNumber: string, token: string) =>
+        set({ isAuthenticated: true, phoneNumber, token, loginTimestamp: Date.now() }),
+      logout: () => set({ isAuthenticated: false, phoneNumber: null, token: null, loginTimestamp: null }),
+      isSessionValid: () => {
+        const { isAuthenticated, loginTimestamp } = get();
+        if (!isAuthenticated || !loginTimestamp) return false;
+        return Date.now() - loginTimestamp <= SESSION_DURATION_MS;
+      },
     }),
     {
-      name: 'auth-storage', // Key for localStorage
-      partialize: (state) => ({ isAuthenticated: state.isAuthenticated, phoneNumber: state.phoneNumber }),
+      name: 'auth-storage',
+      partialize: (state) => ({
+        isAuthenticated: state.isAuthenticated,
+        phoneNumber: state.phoneNumber,
+        token: state.token,
+        loginTimestamp: state.loginTimestamp,
+      }),
     }
   )
 );
