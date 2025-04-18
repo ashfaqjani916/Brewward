@@ -34,3 +34,62 @@ You can check out [the Next.js GitHub repository](https://github.com/vercel/next
 The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
 
 Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+
+## 🚀 Features
+
+- 🌈 Drag-and-drop coffee ingredient UI
+- 🧪 Live coffee color blending based on ingredients
+- 🧾 Dynamic redeem button with animations
+- 📱 Fully responsive design for desktop & mobile
+- 💾 Persistent state with database (via Prisma + PostgreSQL)
+- ⚡ Built with modern frameworks (Next.js App Router, Framer Motion, Tailwind)
+
+## 🎯 Roadmap
+
+- [*] Drag-and-drop mug builder
+- [*] Color blending logic
+- [*] Redeem button & animations
+- [*] Save user’s coffee history
+- [] Leaderboard of popular blends
+- [*] Auth integration
+
+## 📦 Project Structure
+
+├── app/
+│ ├── page.tsx # Home page
+│ ├── ingredient/[...uuid]/page.tsx # Dynamic ingredient route
+│ └── api/ # API routes
+├── components/ # Reusable UI components
+├── prisma/ # Prisma schema and migrations
+├── public/ # Static files and images
+├── styles/ # Global styles
+├── utils/ # Utility functions (e.g., color mixing)
+
+## 🌱 Environment Variables
+
+Create a `.env` file in the root:
+
+```env
+DATABASE_URL="postgresql://<username>:<password>@localhost:5432/rewardsy"
+NEXT_PUBLIC_API_URL="http://localhost:3000/api"
+```
+
+## 🧪 API Testing (Postman)
+
+To test the coffee redeem API:
+
+- **POST** `/api/redeem`
+  - Body: `{ "ingredients": ["espresso", "milk", "sugar"] }`
+  - Response: `{ "success": true, "message": "Redeemed!" }`
+
+Make sure your server is running on `http://localhost:3000`.
+
+## 🛠 Built With
+
+- [Next.js 13 App Router](https://nextjs.org/)
+- [TypeScript](https://www.typescriptlang.org/)
+- [Tailwind CSS](https://tailwindcss.com/)
+- [Framer Motion](https://www.framer.com/motion/)
+- [Prisma ORM](https://www.prisma.io/)
+- [PostgreSQL](https://www.postgresql.org/)
+- [Tabler Icons](https://tabler.io/icons)

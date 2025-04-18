@@ -36,11 +36,11 @@ export async function POST(req: NextRequest) {
       include: { ingredient: true },
     });
 
-    const inventoryMap = new Map(userInventory.map((item) => [item.ingredient.name, item.quantity]));
+    const inventoryMap = new Map<string, number>(userInventory.map((item: { ingredient: { name: string }; quantity: number }) => [item.ingredient.name, item.quantity]));
     const requiredIngredients = coffeeRecipes[type];
-
     for (const ingredient of requiredIngredients) {
-      if (!inventoryMap.has(ingredient) || inventoryMap.get(ingredient)! < 1) {
+      const quantity = inventoryMap.get(ingredient) ?? 0;
+      if (quantity < 1) {
         return NextResponse.json({ error: `Missing ingredient: ${ingredient}` }, { status: 400 });
       }
     }
@@ -54,7 +54,7 @@ export async function POST(req: NextRequest) {
       }
     });
 
-    const ingredientMap = new Map(ingredients.map(ing => [ing.name, ing.id]));
+    const ingredientMap = new Map(ingredients.map((ing: { name: string, id: number }) => [ing.name, ing.id]));
 
     // Deduct ingredients and create coffee
     await prisma.$transaction([
