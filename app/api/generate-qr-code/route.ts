@@ -7,7 +7,7 @@ const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'; // 
 export async function GET(req: NextRequest) {
   try {
     const qrCodes = await prisma.qrCode.findMany();
-    const qrCodeUrls = qrCodes.map((qrCode) => `${baseUrl}/ingredient/${qrCode.id}`);
+    const qrCodeUrls = qrCodes.map((qrCode: { id: string }) => `${baseUrl}/ingredient/${qrCode.id}`);
 
     return NextResponse.json({
       qrCodeUrls: qrCodeUrls
