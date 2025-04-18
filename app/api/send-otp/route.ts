@@ -7,11 +7,11 @@ interface SendOtpRequestBody {
   phoneNumber: string;
 }
 
-interface SendOtpResponse {
-  message?: string;
-  verification?: any;
-  error?: string;
-}
+// interface SendOtpResponse {
+//   message?: string;
+//   verification?: any;
+//   error?: string;
+// }
 
 
 const accountSid = process.env.accountSid;
