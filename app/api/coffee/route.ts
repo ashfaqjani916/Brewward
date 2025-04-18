@@ -1,9 +1,7 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
 
 interface MakeCoffeeRequestBody {
   type: 'Latte' | 'Mocha' | 'IcedCoffee';
@@ -16,15 +14,10 @@ const coffeeRecipes: Record<string, string[]> = {
 };
 
 export async function POST(req: NextRequest) {
-  const token = req.headers.get('authorization')?.replace('Bearer ', '');
-  if (!token) {
-    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-  }
-
   try {
-    const decoded = jwt.verify(token, jwtSecret) as { phoneNumber: string; userId: number };
     const body: MakeCoffeeRequestBody = await req.json();
     const { type } = body;
+    const userId = 1; // Hardcode userId to 1
 
     if (!coffeeRecipes[type]) {
       return NextResponse.json({ error: 'Invalid coffee type' }, { status: 400 });
@@ -32,7 +25,7 @@ export async function POST(req: NextRequest) {
 
     // Check if user has required ingredients
     const userInventory = await prisma.inventory.findMany({
-      where: { userId: decoded.userId },
+      where: { userId },
       include: { ingredient: true },
     });
 
@@ -45,16 +38,16 @@ export async function POST(req: NextRequest) {
       }
     }
 
-    // Get all ingredient IDs first
+    // Get all ingredient IDs
     const ingredients = await prisma.ingredient.findMany({
       where: {
         name: {
-          in: requiredIngredients
-        }
-      }
+          in: requiredIngredients,
+        },
+      },
     });
 
-    const ingredientMap = new Map(ingredients.map(ing => [ing.name, ing.id]));
+    const ingredientMap = new Map(ingredients.map((ing) => [ing.name, ing.id]));
 
     // Deduct ingredients and create coffee
     await prisma.$transaction([
@@ -62,7 +55,7 @@ export async function POST(req: NextRequest) {
         prisma.inventory.update({
           where: {
             userId_ingredientId: {
-              userId: decoded.userId,
+              userId,
               ingredientId: ingredientMap.get(ingredient)!,
             },
           },
@@ -71,7 +64,7 @@ export async function POST(req: NextRequest) {
       ),
       prisma.coffee.create({
         data: {
-          userId: decoded.userId,
+          userId,
           type,
         },
       }),
