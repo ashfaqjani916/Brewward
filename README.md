@@ -1,95 +1,46 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
 
-## Getting Started
+# ☕Brewward
 
-First, run the development server:
+**Brewward: Collect, Trade, and Sip**  
+Built with ❤️ by **Team JEDI**
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+## 🚀 Overview
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+**Coffee Quest** transforms traditional loyalty programs into a fun, social, and gamified experience. Instead of boring point systems, users collect unique coffee ingredients, trade with others, and redeem rewards — all while sipping their favourite brew!
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+## 🎯 Problem Statement
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+> People love rewards, but most loyalty systems are boring and passive.  
+> We wanted something **social**, **fun**, and **game-like** — and since **coffee is love, coffee is life**, we built around it!
 
-## Learn More
+## 🛠️ What We Built
 
-To learn more about Next.js, take a look at the following resources:
+- A web application where users can:
+  - 🧩 **Collect** unique coffee ingredients
+  - 🔄 **Trade** with other users
+  - 🎁 **Redeem** a coupon for a real cup of coffee
+- Built to be:
+  - 🌐 Social & Interactive
+  - 🕹️ Fun & Competitive
+  - 🎯 Reward-driven
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+## ⚙️ How It Works
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+1. Users engage with the app and earn collectable ingredients.
+2. Ingredients can be traded with other users to complete recipes.
+3. Completing a recipe allows the user to redeem a real-world coffee reward.
 
-## Deploy on Vercel
+## 🧑‍💻 Tech Stack
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+- **Frontend**: Next.js
+- **Backend**: TypeScript
+- **Database**: PostgreSQL
+- **DevOps**: Docker
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🧾 Conclusion
 
-## 🚀 Features
+We reimagined loyalty systems by adding excitement and interactivity. Leveraging modern technologies, we turned simple rewards into a social game—all fueled by coffee.
 
-- 🌈 Drag-and-drop coffee ingredient UI
-- 🧪 Live coffee color blending based on ingredients
-- 🧾 Dynamic redeem button with animations
-- 📱 Fully responsive design for desktop & mobile
-- 💾 Persistent state with database (via Prisma + PostgreSQL)
-- ⚡ Built with modern frameworks (Next.js App Router, Framer Motion, Tailwind)
+## 🙏 Thank You
 
-## 🎯 Roadmap
-
-- [*] Drag-and-drop mug builder
-- [*] Color blending logic
-- [*] Redeem button & animations
-- [*] Save user’s coffee history
-- [] Leaderboard of popular blends
-- [*] Auth integration
-
-## 📦 Project Structure
-
-├── app/
-│ ├── page.tsx # Home page
-│ ├── ingredient/[...uuid]/page.tsx # Dynamic ingredient route
-│ └── api/ # API routes
-├── components/ # Reusable UI components
-├── prisma/ # Prisma schema and migrations
-├── public/ # Static files and images
-├── styles/ # Global styles
-├── utils/ # Utility functions (e.g., color mixing)
-
-## 🌱 Environment Variables
-
-Create a `.env` file in the root:
-
-```env
-DATABASE_URL="postgresql://<username>:<password>@localhost:5432/rewardsy"
-NEXT_PUBLIC_API_URL="http://localhost:3000/api"
-```
-
-## 🧪 API Testing (Postman)
-
-To test the coffee redeem API:
-
-- **POST** `/api/redeem`
-  - Body: `{ "ingredients": ["espresso", "milk", "sugar"] }`
-  - Response: `{ "success": true, "message": "Redeemed!" }`
-
-Make sure your server is running on `http://localhost:3000`.
-
-## 🛠 Built With
-
-- [Next.js 13 App Router](https://nextjs.org/)
-- [TypeScript](https://www.typescriptlang.org/)
-- [Tailwind CSS](https://tailwindcss.com/)
-- [Framer Motion](https://www.framer.com/motion/)
-- [Prisma ORM](https://www.prisma.io/)
-- [PostgreSQL](https://www.postgresql.org/)
-- [Tabler Icons](https://tabler.io/icons)
+Stay caffeinated, stay curious.
