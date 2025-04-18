@@ -53,7 +53,9 @@ export async function POST(request: NextRequest) {
     // Upsert user in the database
     const user = await prisma.user.upsert({
       where: { phoneNumber },
-      update: {},
+      update: {
+
+      },
       create: { phoneNumber },
     })
 
