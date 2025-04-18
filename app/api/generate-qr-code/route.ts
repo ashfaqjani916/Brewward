@@ -4,7 +4,7 @@ import { PrismaClient } from '@prisma/client';
 const prisma = new PrismaClient();
 const baseUrl = process.env.NEXT_PUBLIC_BASE_URL || 'http://localhost:3000'; // Replace with your production URL
 
-export async function GET(req: NextRequest) {
+export async function GET() {
   try {
     const qrCodes = await prisma.qrCode.findMany();
     const qrCodeUrls = qrCodes.map((qrCode: { id: string }) => `${baseUrl}/ingredient/${qrCode.id}`);

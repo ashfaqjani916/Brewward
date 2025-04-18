@@ -1,19 +1,19 @@
 import { NextRequest, NextResponse } from 'next/server';
-import jwt from 'jsonwebtoken';
+// import jwt from 'jsonwebtoken';
 import { PrismaClient } from '@prisma/client';
 
 const prisma = new PrismaClient();
-const jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
+// const jwtSecret = process.env.JWT_SECRET || 'your-secret-key';
 
 export async function GET(req: NextRequest, { params }: { params: { uuid: string } }) {
-  const token = req.headers.get('authorization')?.replace('Bearer ', '');
-  if (!token) {
-    return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
-  }
+  // const token = req.headers.get('authorization')?.replace('Bearer ', '');
+  // if (!token) {
+  //   return NextResponse.json({ error: 'Authentication required' }, { status: 401 });
+  // }
 
   try {
     // Verify JWT
-    const decoded = jwt.verify(token, jwtSecret) as { phoneNumber: string; userId: number };
+    // const decoded = jwt.verify(token, jwtSecret) as { phoneNumber: string; userId: number };
 
     // Find QR code
     const qrCode = await prisma.qrCode.findUnique({
@@ -33,13 +33,13 @@ export async function GET(req: NextRequest, { params }: { params: { uuid: string
     await prisma.$transaction([
       prisma.qrCode.update({
         where: { id: params.uuid },
-        data: { usedByUserId: decoded.userId },
+        data: { usedByUserId: 1 },
       }),
       prisma.inventory.upsert({
-        where: { userId_ingredientId: { userId: decoded.userId, ingredientId: qrCode.ingredientId } },
+        where: { userId_ingredientId: { userId: 1, ingredientId: qrCode.ingredientId } },
         update: { quantity: { increment: 1 } },
         create: {
-          userId: decoded.userId,
+          userId: 1,
           ingredientId: qrCode.ingredientId,
           quantity: 1,
         },
