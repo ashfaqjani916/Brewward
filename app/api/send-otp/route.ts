@@ -39,6 +39,8 @@ export async function POST(req: NextRequest) {
       .services(serviceSid as string)
       .verifications.create({ to: phoneNumber, channel: 'sms' });
 
+    console.log(verification)
+
     return NextResponse.json({ message: 'OTP sent successfully', verification }, { status: 200 });
   } catch (error) {
     console.error('Error sending OTP:', error);
