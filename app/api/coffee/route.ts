@@ -5,67 +5,80 @@ const prisma = new PrismaClient();
 
 interface MakeCoffeeRequestBody {
   type: 'Latte' | 'Mocha' | 'IcedCoffee';
+  userId: number;
 }
 
+// Static coffee recipes
 const coffeeRecipes: Record<string, string[]> = {
   Latte: ['milk', 'coffee', 'sugar'],
   Mocha: ['milk', 'coffee', 'chocochips', 'sugar'],
   IcedCoffee: ['ice', 'coffee', 'milk', 'sugar'],
 };
 
+// Static map of ingredient names to their IDs
+const nameToIdMap: { [key: string]: number } = {
+  sugar: 11,
+  milk: 12,
+  ice: 13,
+  coffee: 14,
+  chocochips: 15,
+};
+
 export async function POST(req: NextRequest) {
   try {
     const body: MakeCoffeeRequestBody = await req.json();
-    const { type } = body;
-    const userId = 1; // Hardcode userId to 1
+    const { type, userId } = body;
 
-    if (!coffeeRecipes[type]) {
+    if (!type || typeof userId !== 'number') {
+      return NextResponse.json({ error: 'Missing or invalid coffee type or userId' }, { status: 400 });
+    }
+
+    const requiredIngredients = coffeeRecipes[type];
+    if (!requiredIngredients) {
       return NextResponse.json({ error: 'Invalid coffee type' }, { status: 400 });
     }
 
-    // Check if user has required ingredients
+    // Check user's inventory
     const userInventory = await prisma.inventory.findMany({
       where: { userId },
       include: { ingredient: true },
     });
 
-    const inventoryMap = new Map<string, number>(userInventory.map((item: { ingredient: { name: string }; quantity: number }) => [item.ingredient.name, item.quantity]));
-    const requiredIngredients = coffeeRecipes[type];
+    // Normalize inventory map: ingredient name -> quantity
+    const inventoryMap = new Map<string, number>(
+      userInventory.map((item) => [item.ingredient.name.toLowerCase(), item.quantity])
+    );
+
+    // Check for missing ingredients
     for (const ingredient of requiredIngredients) {
-      const quantity = inventoryMap.get(ingredient) ?? 0;
+      const quantity = inventoryMap.get(ingredient.toLowerCase()) ?? 0;
       if (quantity < 1) {
         return NextResponse.json({ error: `Missing ingredient: ${ingredient}` }, { status: 400 });
       }
     }
 
-    // Get all ingredient IDs
-    const ingredients = await prisma.ingredient.findMany({
-      where: {
-        name: {
-          in: requiredIngredients,
-        },
-      },
-    });
-
-<<<<<<< HEAD
-    const ingredientMap = new Map(ingredients.map((ing: { name: string, id: number }) => [ing.name, ing.id]));
-=======
-    const ingredientMap = new Map(ingredients.map((ing) => [ing.name, ing.id]));
->>>>>>> ae3885e3161837875febc9e78969f67c3bd423c4
-
-    // Deduct ingredients and create coffee
+    // Create a transaction to decrement inventory and record coffee
     await prisma.$transaction([
-      ...requiredIngredients.map((ingredient) =>
-        prisma.inventory.update({
+      ...requiredIngredients.map((ingredient) => {
+        const ingredientId = nameToIdMap[ingredient.toLowerCase()];
+        if (!ingredientId) {
+          throw new Error(`Ingredient ID not found for: ${ingredient}`);
+        }
+
+        return prisma.inventory.update({
           where: {
             userId_ingredientId: {
               userId,
-              ingredientId: ingredientMap.get(ingredient)!,
+              ingredientId,
             },
           },
-          data: { quantity: { decrement: 1 } },
-        })
-      ),
+          data: {
+            quantity: {
+              decrement: 1,
+            },
+          },
+        });
+      }),
       prisma.coffee.create({
         data: {
           userId,
