@@ -1,5 +1,5 @@
 import { create } from 'zustand';
-import { persist } from 'zustand/middleware';
+import { persist, createJSONStorage } from 'zustand/middleware';
 
 interface AuthState {
   isAuthenticated: boolean;
@@ -11,7 +11,7 @@ interface AuthState {
   isSessionValid: () => boolean;
 }
 
-const SESSION_DURATION_MS = 25 * 60 * 1000;
+const SESSION_DURATION_MS = 25 * 60 * 1000; // 25 minutes
 
 export const useAuthStore = create<AuthState>()(
   persist(
@@ -20,9 +20,23 @@ export const useAuthStore = create<AuthState>()(
       phoneNumber: null,
       token: null,
       loginTimestamp: null,
+
       login: (phoneNumber: string, token: string) =>
-        set({ isAuthenticated: true, phoneNumber, token, loginTimestamp: Date.now() }),
-      logout: () => set({ isAuthenticated: false, phoneNumber: null, token: null, loginTimestamp: null }),
+        set({
+          isAuthenticated: true,
+          phoneNumber,
+          token,
+          loginTimestamp: Date.now(),
+        }),
+
+      logout: () =>
+        set({
+          isAuthenticated: false,
+          phoneNumber: null,
+          token: null,
+          loginTimestamp: null,
+        }),
+
       isSessionValid: () => {
         const { isAuthenticated, loginTimestamp } = get();
         if (!isAuthenticated || !loginTimestamp) return false;
@@ -31,6 +45,7 @@ export const useAuthStore = create<AuthState>()(
     }),
     {
       name: 'auth-storage',
+      storage: createJSONStorage(() => sessionStorage),
       partialize: (state) => ({
         isAuthenticated: state.isAuthenticated,
         phoneNumber: state.phoneNumber,

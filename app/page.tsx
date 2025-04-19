@@ -1,20 +1,20 @@
 'use client'
-import { useEffect } from 'react';
-import { useRouter } from 'next/navigation';
-import { useAuthStore } from '../lib/store/authStore';
+import { useEffect } from 'react'
+import { useRouter } from 'next/navigation'
+import { useAuthStore } from '../lib/store/authStore'
 
 export default function Home() {
-  const { isAuthenticated } = useAuthStore();
-  const router = useRouter();
+  const { isAuthenticated } = useAuthStore()
+  const router = useRouter()
 
   useEffect(() => {
     // Check authentication status and redirect accordingly
     if (isAuthenticated) {
-      router.push('/dashboard');
+      router.push('/dashboard')
     } else {
-      router.push('/login');
+      router.push('/login')
     }
-  }, [isAuthenticated, router]);
+  }, [isAuthenticated, router])
 
   // Return a simple loading state while redirecting
   return (
@@ -24,5 +24,5 @@ export default function Home() {
         <p className="mt-2 text-[#8B5A2B]">Please wait while we check your authentication status.</p>
       </div>
     </div>
-  );
+  )
 }
