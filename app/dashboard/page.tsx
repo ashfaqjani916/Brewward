@@ -32,7 +32,7 @@ const Dashboard: React.FC = () => {
     {
       id: 'latte',
       name: 'Latte',
-      image: '/images/latte.jpg',
+      image: '/images/latte.jpeg',
       description: 'Smooth espresso with steamed milk',
       ingredients: ['milk', 'coffee', 'sugar'],
     },

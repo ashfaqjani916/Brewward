@@ -158,8 +158,6 @@ const Dashboard: React.FC = () => {
         userId: data.id,
       })
 
-      console.log(makeCoffee)
-
       // Reload ingredient data
       const response = await axios.get('/api/inventory/1')
       const fetchedData = response.data.data
