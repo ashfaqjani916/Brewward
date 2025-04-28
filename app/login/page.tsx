@@ -84,7 +84,7 @@ export default function LoginPage() {
     <div className="min-h-screen flex items-center justify-center bg-[#F5F0E6] py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-md w-full space-y-8">
         <div>
-          <h2 className="mt-6 text-center text-3xl font-extrabold text-[#4A2C2A]">Welcome to #####</h2>
+          <h2 className="mt-6 text-center text-3xl font-extrabold text-[#4A2C2A]">Welcome to Brewwards</h2>
           <p className="mt-2 text-center text-sm text-[#8B5A2B]">Sign in to your account</p>
         </div>
         <form className="mt-8 space-y-6" onSubmit={otpSent ? handleVerifyOtp : handleSendOtp}>
