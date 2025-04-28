@@ -27,6 +27,7 @@
     "react-dnd-html5-backend": "^16.0.1",
     "react-dom": "^18",
     "ts-node": "^10.9.2",
+    "turbopack": "^0.0.1",
     "twilio": "^5.5.2",
     "uuid": "^11.1.0",
     "zustand": "^5.0.3"
