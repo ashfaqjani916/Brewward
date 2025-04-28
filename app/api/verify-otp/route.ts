@@ -1,3 +1,5 @@
+
+
 // app/api/verify-otp/route.ts
 'use server'
 
@@ -8,7 +10,6 @@ import jwt from 'jsonwebtoken'
 
 // Create a singleton Prisma client to avoid too many connections
 declare global {
-  // eslint-disable-next-line no-var
   var prisma: PrismaClient | undefined
 }
 const prisma = global.prisma ?? new PrismaClient({ log: ['query'] })
@@ -53,9 +54,7 @@ export async function POST(request: NextRequest) {
     // Upsert user in the database
     const user = await prisma.user.upsert({
       where: { phoneNumber },
-      update: {
-
-      },
+      update: {},
       create: { phoneNumber },
     })
 
@@ -67,7 +66,7 @@ export async function POST(request: NextRequest) {
     )
 
     return NextResponse.json(
-      { message: 'OTP verified successfully', token },
+      { message: 'OTP verified successfully', token, phoneNumber: user.phoneNumber },
       { status: 200 }
     )
   } catch (err) {
