@@ -4,7 +4,7 @@ import React, { useState, useRef, useEffect } from 'react'
 import { IconCoffee, IconBottle, IconSquare, IconCookie, IconSnowflake, IconCheck, IconRocket } from '@tabler/icons-react'
 import { motion } from 'framer-motion'
 import axios from 'axios'
-import { useAuthStore } from '@/lib/store/authStore'
+// import { useAuthStore } from '@/lib/store/authStore'
 
 interface Ingredient {
   id: string
@@ -29,7 +29,7 @@ const TradePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const rocketRef = useRef<HTMLDivElement>(null)
 
-  const phoneNumber = useAuthStore((state) => state.phoneNumber)
+  // const phoneNumber = useAuthStore((state) => state.phoneNumber)
 
   // Fetch ingredients inventory on component mount
   useEffect(() => {
