@@ -11,7 +11,7 @@ interface AuthState {
   isSessionValid: () => boolean;
 }
 
-const SESSION_DURATION_MS = 25 * 60 * 1000; // 25 minutes
+const SESSION_DURATION_MS = 25 * 60 * 1000; 
 
 export const useAuthStore = create<AuthState>()(
   persist(
