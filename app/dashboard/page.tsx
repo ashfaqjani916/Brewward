@@ -6,8 +6,7 @@ import { motion } from 'framer-motion'
 import { IconCoffee, IconCoffeeOff, IconExchange, IconHistory, IconShoppingCart } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
-import { signOut, useSession } from 'next-auth/react'
-// import { useAuthStore } from '@/lib/store/authStore'
+
 
 interface Coffee {
   id: string
@@ -21,21 +20,11 @@ const Dashboard: React.FC = () => {
   const router = useRouter()
   const pathname = usePathname()
 
-  // const { isAuthenticated, isSessionValid, phoneNumber, logout } = useAuthStore()
 
-  // useEffect(() => {
-  //   if (!isAuthenticated || !isSessionValid()) {
-  //     router.push('/login')
-  //   }
-  // }, [isAuthenticated, isSessionValid, router])
 
   const { status } = useSession()
 
-  useEffect(() => {
-    if (status === 'unauthenticated') {
-      router.push('/login')
-    }
-  }, [status])
+ 
 
   const coffees: Coffee[] = [
     {
@@ -72,9 +61,6 @@ const Dashboard: React.FC = () => {
     router.push(`/dashboard/redeem?type=${coffeeId}`)
   }
 
-  // if (!isAuthenticated || !isSessionValid()) {
-  //   return null // Optionally show a loading state or splash screen
-  // }
 
   return (
     <div className="min-h-screen bg-amber-50">
@@ -83,7 +69,6 @@ const Dashboard: React.FC = () => {
         <div className="w-64 bg-amber-900 text-amber-50 p-4">
           <div className="mb-8">
             <h1 className="text-2xl font-bold">Coffee Rewards</h1>
-            {/* <p className="text-amber-200 text-sm mt-1">{phoneNumber}</p> */}
           </div>
           <nav>
             <ul className="space-y-2">
