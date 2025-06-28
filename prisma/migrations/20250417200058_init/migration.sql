@@ -1,7 +1,7 @@
 -- CreateTable
 CREATE TABLE "User" (
     "id" SERIAL NOT NULL,
-    "phoneNumber" TEXT NOT NULL,
+    "email" TEXT NOT NULL,
     "createdAt" TIMESTAMP(3) NOT NULL DEFAULT CURRENT_TIMESTAMP,
     "updatedAt" TIMESTAMP(3) NOT NULL,
 
@@ -20,7 +20,7 @@ CREATE TABLE "Session" (
 );
 
 -- CreateIndex
-CREATE UNIQUE INDEX "User_phoneNumber_key" ON "User"("phoneNumber");
+CREATE UNIQUE INDEX "User_email_key" ON "User"("email");
 
 -- CreateIndex
 CREATE UNIQUE INDEX "Session_token_key" ON "Session"("token");

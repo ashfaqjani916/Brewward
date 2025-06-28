@@ -36,7 +36,7 @@ const Dashboard: React.FC = () => {
   const mugRef = useRef<HTMLDivElement>(null)
   const [isMobile, setIsMobile] = useState<boolean>(false)
 
-  const phoneNumber = useAuthStore((state) => state.phoneNumber)
+  const email = useAuthStore((state) => state.email)
 
   useEffect(() => {
     const checkMobile = () => setIsMobile(window.innerWidth < 640)
@@ -50,8 +50,8 @@ const Dashboard: React.FC = () => {
       try {
         // const token = useAuthStore.getState().token
 
-        // console.log(phoneNumber)
-        const res = await axios.get(`/api/user/${phoneNumber}`)
+        // console.log(email)
+        const res = await axios.get(`/api/user/${email}`)
         const data = await res.data.user
 
         const response = await axios.get(`/api/inventory/${data.id}`)
@@ -150,7 +150,7 @@ const Dashboard: React.FC = () => {
     setError(null)
 
     try {
-      const res = await axios.get(`/api/user/${phoneNumber}`)
+      const res = await axios.get(`/api/user/${email}`)
       const data = await res.data.user
 
       const makeCoffee = await axios.post('/api/coffee', {

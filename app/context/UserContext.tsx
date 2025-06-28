@@ -5,7 +5,7 @@ import axios from 'axios'
 
 interface User {
   userId: number
-  phoneNumber: string
+  email: string
 }
 
 interface UserContextType {
@@ -19,7 +19,7 @@ const UserContext = createContext<UserContextType>({
   user: null,
   loading: true,
   error: null,
-  setUser: () => {},
+  setUser: () => { },
 })
 
 export const useUser = () => useContext(UserContext)

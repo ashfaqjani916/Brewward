@@ -13,7 +13,7 @@ export async function GET(req: NextRequest, { params }: { params: { uuid: string
 
   try {
     // Verify JWT
-    // const decoded = jwt.verify(token, jwtSecret) as { phoneNumber: string; userId: number };
+    // const decoded = jwt.verify(token, jwtSecret) as { email: string; userId: number };
 
     // Find QR code
     const qrCode = await prisma.qrCode.findUnique({

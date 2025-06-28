@@ -16,7 +16,7 @@
 
 //   try {
 //     // Verify JWT
-//     const decoded = jwt.verify(token, jwtSecret) as { phoneNumber: string; userId: number };
+//     const decoded = jwt.verify(token, jwtSecret) as { email: string; userId: number };
 
 //     // Check session in database
 //     const session = await prisma.session.findFirst({

@@ -29,14 +29,14 @@ const TradePage: React.FC = () => {
   const [error, setError] = useState<string | null>(null)
   const rocketRef = useRef<HTMLDivElement>(null)
 
-  const phoneNumber = useAuthStore((state) => state.phoneNumber)
+  const email = useAuthStore((state) => state.email)
 
   // Fetch ingredients inventory on component mount
   useEffect(() => {
     const fetchIngredients = async () => {
       try {
         // First get the user ID from the phone number
-        const res = await axios.get(`/api/user/${phoneNumber}`)
+        const res = await axios.get(`/api/user/${email}`)
         const data = await res.data.user
 
         // Then fetch the inventory for that user
@@ -69,7 +69,7 @@ const TradePage: React.FC = () => {
     }
 
     fetchIngredients()
-  }, [phoneNumber])
+  }, [email])
 
   const handleDrop = (id: string) => {
     if (!rocketIngredient) {
@@ -100,7 +100,7 @@ const TradePage: React.FC = () => {
 
     try {
       // Get user ID
-      const res = await axios.get(`/api/user/${phoneNumber}`)
+      const res = await axios.get(`/api/user/${email}`)
       const data = await res.data.user
 
       // Here you would add the API call to process the trade
@@ -196,9 +196,8 @@ const TradePage: React.FC = () => {
           <button
             onClick={handleLaunch}
             disabled={!rocketIngredient || isLaunching}
-            className={`py-3 px-6 rounded-xl shadow-lg transition-all ${
-              !rocketIngredient || isLaunching ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-amber-500 hover:bg-amber-600 text-white'
-            }`}
+            className={`py-3 px-6 rounded-xl shadow-lg transition-all ${!rocketIngredient || isLaunching ? 'bg-gray-300 text-gray-600 cursor-not-allowed' : 'bg-amber-500 hover:bg-amber-600 text-white'
+              }`}
           >
             {isLaunching ? (
               <span className="flex items-center justify-center">

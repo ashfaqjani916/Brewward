@@ -6,6 +6,7 @@ import { motion } from 'framer-motion'
 import { IconCoffee, IconCoffeeOff, IconExchange, IconHistory, IconShoppingCart } from '@tabler/icons-react'
 import Image from 'next/image'
 import Link from 'next/link'
+import { useSession, signOut } from 'next-auth/react'
 
 
 interface Coffee {
@@ -19,13 +20,6 @@ interface Coffee {
 const Dashboard: React.FC = () => {
   const router = useRouter()
   const pathname = usePathname()
-
-
-
-  const { status } = useSession()
-
- 
-
   const coffees: Coffee[] = [
     {
       id: 'latte',
