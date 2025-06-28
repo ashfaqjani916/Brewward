@@ -8,21 +8,22 @@ datasource db {
 }
 
 model User {
-  id          Int         @id @default(autoincrement())
-  userId      String?
-  phoneNumber String      @unique
-  createdAt   DateTime    @default(now())
-  updatedAt   DateTime    @updatedAt
-  inventory   Inventory[]
-  coffees     Coffee[]
+  id        Int      @id @default(autoincrement())
+  email     String?  @unique
+  name      String?
+  image     String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
 
-  QrCode QrCode[]
+  inventory Inventory[]
+  coffees   Coffee[]
+  qrCodes   QrCode[]
 }
 
 model Ingredient {
   id           Int         @id @default(autoincrement())
   ingredientId String?     @unique
-  name         String      @unique // e.g., sugar, milk, ice, coffee, chocochips
+  name         String      @unique
   qrCodes      QrCode[]
   inventories  Inventory[]
 }
@@ -51,6 +52,6 @@ model Coffee {
   id        Int      @id @default(autoincrement())
   userId    Int
   user      User     @relation(fields: [userId], references: [id])
-  type      String // e.g., Latte, Mocha, IcedCoffee
+  type      String
   createdAt DateTime @default(now())
 }
